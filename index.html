@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Reporting Process &amp; Note Analysis</title>
+<style>
+  :root{
+    --bg:#faf7f0;
+    --paper:#ffffff;
+    --ink:#1f2a37;
+    --ink-soft:#5b6573;
+    --line:#e3ddd0;
+    --navy:#1d3557;
+    --accent:#9c5221;
+    --gold:#b8893a;
+    --table-head:#f1ece1;
+    --shadow:0 1px 2px rgba(31,42,55,.06),0 8px 24px rgba(31,42,55,.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, #fff 0%, rgba(255,255,255,0) 60%),
+      var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:48px 28px 80px;}
+
+  /* Header */
+  header{
+    border-bottom:2px solid var(--navy);padding-bottom:18px;margin-bottom:8px;
+  }
+  header h1{
+    font-size:30px;font-weight:700;letter-spacing:.4px;margin:0;color:var(--navy);
+  }
+  header .sub{
+    margin-top:6px;color:var(--ink-soft);font-size:13.5px;letter-spacing:.3px;
+  }
+
+  .eyebrow{
+    margin:46px 0 14px;font-size:12px;font-weight:700;letter-spacing:2px;
+    text-transform:uppercase;color:var(--accent);
+    display:flex;align-items:center;gap:12px;
+  }
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  /* ===== Flow (clean continuous spine) ===== */
+  .flow{
+    background:var(--paper);border:1px solid var(--line);border-radius:16px;
+    padding:24px 28px 40px;box-shadow:var(--shadow);
+  }
+  .flow-key{
+    display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:26px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+  }
+  .flow-key b{font-weight:700;}
+  .flow-key .k-in{color:var(--navy);font-weight:800;letter-spacing:.5px;}
+  .flow-key .k-out{color:var(--accent);font-weight:800;letter-spacing:.5px;}
+  .flow-key .sep{color:var(--line);margin:0 4px;}
+
+  .spine{display:flex;flex-direction:column;align-items:center;}
+
+  .node{
+    position:relative;width:100%;max-width:430px;
+    background:#fff;border:1.6px solid var(--navy);border-radius:12px;
+    padding:16px 22px;text-align:center;
+  }
+  .node .nm{display:block;font-weight:700;font-size:15px;color:var(--navy);line-height:1.4;}
+  .node.dashed{border-style:dashed;}
+  .node.strong{border-width:2.5px;background:#fbf7ef;}
+
+  .badge{
+    position:absolute;top:-14px;width:28px;height:28px;border-radius:50%;
+    display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;
+    border:2.5px solid #fff;box-shadow:var(--shadow);
+  }
+  .badge.out{right:-14px;background:var(--accent);}
+
+  /* input numbers ①–⑥ : plain circled glyphs in navy (match the Inputs key) */
+  .num{color:var(--navy);font-weight:800;font-style:normal;}
+  .node .nm .num{margin-right:6px;}
+  .conn .lbl .num{margin-left:5px;}
+
+  /* vertical connector + arrowhead; label rides on a solid pill so the line never shows through */
+  .conn{
+    position:relative;width:2px;background:var(--navy);height:78px;flex:none;
+  }
+  .conn::after{
+    content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+    border-left:6px solid transparent;border-right:6px solid transparent;
+    border-top:10px solid var(--navy);
+  }
+  .conn .lbl{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:max-content;max-width:min(440px,86vw);
+    background:var(--paper);border:1px solid var(--line);border-radius:999px;
+    padding:6px 14px;box-shadow:var(--shadow);
+    display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:8px;
+    white-space:nowrap;font-size:12.5px;font-weight:700;color:var(--accent);
+  }
+  .conn .lbl .sub{color:var(--ink-soft);font-weight:600;}
+  .conn .lbl .chip{
+    color:var(--ink);font-weight:600;font-size:12.5px;white-space:nowrap;
+  }
+
+  /* B row with parallel side-output (PRC consolidated) */
+  .brow{position:relative;width:100%;display:flex;justify-content:center;}
+  .side{
+    position:absolute;left:50%;top:50%;transform:translateY(-50%);
+    margin-left:238px;display:flex;align-items:center;
+  }
+  .harrow{width:40px;height:2px;background:var(--navy);position:relative;flex:none;}
+  .harrow::after{
+    content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);
+    border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid var(--navy);
+  }
+  .side .node{width:auto;max-width:190px;}
+
+  /* Tables */
+  .grid{display:grid;gap:26px;}
+  .card{
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);overflow:hidden;
+  }
+  .card-head{
+    padding:16px 22px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#fff, #fbf8f1);
+  }
+  .card-head .k{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);}
+  .card-head h3{margin:4px 0 0;font-size:16.5px;color:var(--navy);font-weight:700;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th,td{padding:10px 22px;text-align:left;border-bottom:1px solid var(--line);}
+  th{background:var(--table-head);color:var(--navy);font-weight:700;font-size:12.5px;letter-spacing:.5px;}
+  tbody tr:last-child td{border-bottom:0;}
+  tbody tr:hover{background:#fcfaf5;}
+  td.abbr{font-family:Arial,sans-serif;font-weight:700;color:var(--accent);white-space:nowrap;width:42%;}
+  td.full{color:var(--ink);}
+
+  .note{
+    margin-top:14px;font-size:12.5px;color:var(--ink-soft);
+    border-left:3px solid var(--gold);padding:8px 0 8px 12px;background:#fbf7ee;border-radius:0 6px 6px 0;
+  }
+
+  footer{margin-top:54px;text-align:center;font-size:12px;color:var(--ink-soft);}
+
+  @media(max-width:860px){
+    .side{position:static;transform:none;margin-left:0;margin-top:14px;flex-direction:column;}
+    .brow{flex-direction:column;align-items:center;}
+    .harrow{width:2px;height:26px;}
+    .harrow::after{
+      right:auto;left:50%;top:auto;bottom:0;transform:translateX(-50%);
+      border-left:6px solid transparent;border-right:6px solid transparent;
+      border-top:10px solid var(--navy);border-bottom:0;
+    }
+    .side .node{max-width:430px;}
+  }
+  @media(max-width:640px){
+    header h1{font-size:22px;}
+    th,td{padding:9px 14px;}
+    .conn{height:92px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Financial Reporting Process &amp; Note Analysis</h1>
+    <div class="sub">Journal &rarr; Consolidated FS pipeline &middot; Footnote analysis feasibility</div>
+  </header>
+
+  <!-- FLOW -->
+  <div class="eyebrow">I. Reporting Process Flow</div>
+  <div class="flow">
+   <div class="flow-key">
+     <span><b class="k-in">&#9312; &ndash; &#9317;</b> Inputs</span>
+     <span class="sep">|</span>
+     <span><b class="k-out">A &ndash; D</b> Outputs</span>
+   </div>
+   <div class="spine">
+
+    <div class="node dashed">
+      <span class="nm"><b class="num">&#9312;</b> General Ledger / Journal</span>
+    </div>
+
+    <div class="conn"></div>
+
+    <div class="node">
+      <span class="nm">Trial Balance</span>
+    </div>
+
+    <div class="conn">
+      <span class="lbl">Structure <b class="num">&#9313;</b><span class="sub">Group entity / ownership structure</span></span>
+    </div>
+
+    <div class="node">
+      <span class="badge out">A</span>
+      <span class="nm">PRC Entity-level FS (Before Adjustment)</span>
+    </div>
+
+    <div class="conn">
+      <span class="lbl">Adjustment Layer<span class="sub">Reclassification</span></span>
+    </div>
+
+    <!-- B node with parallel side-output to PRC consolidated -->
+    <div class="brow">
+      <div class="node">
+        <span class="badge out">B</span>
+        <span class="nm">PRC Entity-level FS (After Adjustment)</span>
+      </div>
+      <div class="side">
+        <div class="harrow"></div>
+        <div class="node dashed">
+          <span class="nm">PRC Consolidated FS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="conn">
+      <span class="lbl">Adjustments
+        <span class="chip">GAAP Adj.<b class="num">&#9314;</b></span>
+        <span class="chip">Other Adj.<b class="num">&#9315;</b></span>
+      </span>
+    </div>
+
+    <div class="node">
+      <span class="badge out">C</span>
+      <span class="nm">US Entity-level FS (After Adjustment)</span>
+    </div>
+
+    <div class="conn">
+      <span class="lbl">Elimination
+        <span class="chip">LT Investment<b class="num">&#9316;</b></span>
+        <span class="chip">Intercompany<b class="num">&#9317;</b></span>
+      </span>
+    </div>
+
+    <div class="node strong">
+      <span class="badge out">D</span>
+      <span class="nm">US Consolidated FS (BS, PL)</span>
+    </div>
+
+   </div>
+  </div>
+
+  <!-- FOOTNOTE ANALYSIS -->
+  <div class="eyebrow">II. Footnote Analysis Categories</div>
+  <div class="grid">
+
+    <!-- Category 1 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="k">Category 1</div>
+        <h3>Can be produced directly from GL + all adjustments</h3>
+      </div>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Name</th></tr></thead>
+        <tbody>
+          <tr><td class="abbr">Cash</td><td class="full">Cash and Cash Equivalents</td></tr>
+          <tr><td class="abbr">AR</td><td class="full">Accounts Receivable</td></tr>
+          <tr><td class="abbr">OR</td><td class="full">Other Receivables</td></tr>
+          <tr><td class="abbr">IA</td><td class="full">Intangible Assets</td></tr>
+          <tr><td class="abbr">PPE</td><td class="full">Property, Plant and Equipment</td></tr>
+          <tr><td class="abbr">OP</td><td class="full">Other Payables</td></tr>
+          <tr><td class="abbr">Salary</td><td class="full">Salary / Payroll Payable</td></tr>
+          <tr><td class="abbr">Taxes Payable</td><td class="full">Taxes Payable</td></tr>
+          <tr><td class="abbr">CL</td><td class="full">Current Liabilities</td></tr>
+          <tr><td class="abbr">AP</td><td class="full">Accounts Payable</td></tr>
+          <tr><td class="abbr">Revenue</td><td class="full">Revenue</td></tr>
+          <tr><td class="abbr">SBC</td><td class="full">Share-Based Compensation</td></tr>
+          <tr><td class="abbr">cost</td><td class="full">Cost (of Revenue / Sales)</td></tr>
+          <tr><td class="abbr">S&amp;M</td><td class="full">Sales &amp; Marketing Expenses</td></tr>
+          <tr><td class="abbr">G&amp;A</td><td class="full">General &amp; Administrative Expenses</td></tr>
+          <tr><td class="abbr">R&amp;D</td><td class="full">Research &amp; Development Expenses</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Category 2 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="k">Category 2</div>
+        <h3>Cannot be produced directly from GL + all adjustments</h3>
+      </div>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Name</th></tr></thead>
+        <tbody>
+          <tr><td class="abbr">ST Investment</td><td class="full">Short-Term Investment</td></tr>
+          <tr><td class="abbr">DTA</td><td class="full">Deferred Tax Assets</td></tr>
+          <tr><td class="abbr">DTL</td><td class="full">Deferred Tax Liabilities</td></tr>
+          <tr><td class="abbr">Lease</td><td class="full">Lease</td></tr>
+          <tr><td class="abbr">Equity movement</td><td class="full">Statement of Changes in Equity</td></tr>
+          <tr><td class="abbr">EPS</td><td class="full">Earnings Per Share</td></tr>
+          <tr><td class="abbr">Taxation</td><td class="full">Taxation / Income Tax</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Category 3 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="k">Category 3</div>
+        <h3>Can be produced, but with some difficulty</h3>
+      </div>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Name</th></tr></thead>
+        <tbody>
+          <tr><td class="abbr">CF</td><td class="full">Cash Flow Statement</td></tr>
+          <tr><td class="abbr">VIE</td><td class="full">Variable Interest Entity</td></tr>
+          <tr><td class="abbr">Consolidation Schedule</td><td class="full">Consolidation Schedule</td></tr>
+          <tr><td class="abbr">Segment PL &amp; BS</td><td class="full">Segment P&amp;L and Balance Sheet</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">Note: BS = Balance Sheet; PL = Profit &amp; Loss Statement. OR / OP read as Other Receivables / Other Payables per statement context.</div>
+  </div>
+
+  <footer>Compiled from handwritten notes</footer>
+</div>
+</body>
+</html>
