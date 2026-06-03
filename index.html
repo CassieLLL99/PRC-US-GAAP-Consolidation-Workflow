@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Financial Reporting Process &amp; Note Analysis</title>
+<title data-zh="财务报表生成流程与附注分析" data-en="Financial Reporting Process &amp; Note Analysis">财务报表生成流程与附注分析</title>
 <style>
   :root{
     --bg:#faf7f0;
@@ -32,14 +32,20 @@
 
   /* Header */
   header{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
     border-bottom:2px solid var(--navy);padding-bottom:18px;margin-bottom:8px;
   }
-  header h1{
-    font-size:30px;font-weight:700;letter-spacing:.4px;margin:0;color:var(--navy);
+  .titles h1{font-size:30px;font-weight:700;letter-spacing:.4px;margin:0;color:var(--navy);}
+  .titles .sub{margin-top:6px;color:var(--ink-soft);font-size:13.5px;letter-spacing:.3px;}
+  .toggle{
+    flex-shrink:0;display:inline-flex;border:1.5px solid var(--navy);border-radius:999px;
+    overflow:hidden;background:var(--paper);box-shadow:var(--shadow);user-select:none;
   }
-  header .sub{
-    margin-top:6px;color:var(--ink-soft);font-size:13.5px;letter-spacing:.3px;
+  .toggle button{
+    border:0;background:transparent;padding:8px 16px;cursor:pointer;color:var(--navy);
+    font-family:inherit;font-weight:700;font-size:13px;transition:.2s;
   }
+  .toggle button.active{background:var(--navy);color:#fff;}
 
   .eyebrow{
     margin:46px 0 14px;font-size:12px;font-weight:700;letter-spacing:2px;
@@ -57,7 +63,6 @@
     display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;
     margin-bottom:26px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
   }
-  .flow-key b{font-weight:700;}
   .flow-key .k-in{color:var(--navy);font-weight:800;letter-spacing:.5px;}
   .flow-key .k-out{color:var(--accent);font-weight:800;letter-spacing:.5px;}
   .flow-key .sep{color:var(--line);margin:0 4px;}
@@ -86,9 +91,7 @@
   .conn .lbl .num{margin-left:5px;}
 
   /* vertical connector + arrowhead; label rides on a solid pill so the line never shows through */
-  .conn{
-    position:relative;width:2px;background:var(--navy);height:78px;flex:none;
-  }
+  .conn{position:relative;width:2px;background:var(--navy);height:78px;flex:none;}
   .conn::after{
     content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
     border-left:6px solid transparent;border-right:6px solid transparent;
@@ -103,16 +106,11 @@
     white-space:nowrap;font-size:12.5px;font-weight:700;color:var(--accent);
   }
   .conn .lbl .sub{color:var(--ink-soft);font-weight:600;}
-  .conn .lbl .chip{
-    color:var(--ink);font-weight:600;font-size:12.5px;white-space:nowrap;
-  }
+  .conn .lbl .chip{color:var(--ink);font-weight:600;font-size:12.5px;white-space:nowrap;}
 
   /* B row with parallel side-output (PRC consolidated) */
   .brow{position:relative;width:100%;display:flex;justify-content:center;}
-  .side{
-    position:absolute;left:50%;top:50%;transform:translateY(-50%);
-    margin-left:238px;display:flex;align-items:center;
-  }
+  .side{position:absolute;left:50%;top:50%;transform:translateY(-50%);margin-left:238px;display:flex;align-items:center;}
   .harrow{width:40px;height:2px;background:var(--navy);position:relative;flex:none;}
   .harrow::after{
     content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);
@@ -122,14 +120,8 @@
 
   /* Tables */
   .grid{display:grid;gap:26px;}
-  .card{
-    background:var(--paper);border:1px solid var(--line);border-radius:14px;
-    box-shadow:var(--shadow);overflow:hidden;
-  }
-  .card-head{
-    padding:16px 22px;border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#fff, #fbf8f1);
-  }
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .card-head{padding:16px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbf8f1);}
   .card-head .k{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);}
   .card-head h3{margin:4px 0 0;font-size:16.5px;color:var(--navy);font-weight:700;}
   table{width:100%;border-collapse:collapse;font-size:14px;}
@@ -151,15 +143,11 @@
     .side{position:static;transform:none;margin-left:0;margin-top:14px;flex-direction:column;}
     .brow{flex-direction:column;align-items:center;}
     .harrow{width:2px;height:26px;}
-    .harrow::after{
-      right:auto;left:50%;top:auto;bottom:0;transform:translateX(-50%);
-      border-left:6px solid transparent;border-right:6px solid transparent;
-      border-top:10px solid var(--navy);border-bottom:0;
-    }
+    .harrow::after{right:auto;left:50%;top:auto;bottom:0;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid var(--navy);border-bottom:0;}
     .side .node{max-width:430px;}
   }
   @media(max-width:640px){
-    header h1{font-size:22px;}
+    .titles h1{font-size:22px;}
     th,td{padding:9px 14px;}
     .conn{height:92px;}
   }
@@ -169,113 +157,119 @@
 <div class="wrap">
 
   <header>
-    <h1>Financial Reporting Process &amp; Note Analysis</h1>
-    <div class="sub">Journal &rarr; Consolidated FS pipeline &middot; Footnote analysis feasibility</div>
+    <div class="titles">
+      <h1 data-zh="财务报表生成流程与附注分析" data-en="Financial Reporting Process &amp; Note Analysis"></h1>
+      <div class="sub" data-zh="序时账 &rarr; 合并报表 全流程 &middot; 附注分析可出表分类" data-en="Journal &rarr; Consolidated FS pipeline &middot; Footnote analysis feasibility"></div>
+    </div>
+    <div class="toggle" role="group" aria-label="language">
+      <button id="btn-zh" class="active" onclick="setLang('zh')">中文</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
   </header>
 
   <!-- FLOW -->
-  <div class="eyebrow">I. Reporting Process Flow</div>
+  <div class="eyebrow" data-zh="一、报表生成流程" data-en="I. Reporting Process Flow"></div>
   <div class="flow">
    <div class="flow-key">
-     <span><b class="k-in">&#9312; &ndash; &#9317;</b> Inputs</span>
+     <span><b class="k-in">&#9312; &ndash; &#9317;</b> <span data-zh="输入" data-en="Inputs"></span></span>
      <span class="sep">|</span>
-     <span><b class="k-out">A &ndash; D</b> Outputs</span>
+     <span><b class="k-out">A &ndash; D</b> <span data-zh="输出" data-en="Outputs"></span></span>
    </div>
    <div class="spine">
 
     <div class="node dashed">
-      <span class="nm"><b class="num">&#9312;</b> General Ledger / Journal</span>
+      <span class="nm"><b class="num">&#9312;</b> <span data-zh="序时账" data-en="General Ledger / Journal"></span></span>
     </div>
 
     <div class="conn"></div>
 
     <div class="node">
-      <span class="nm">Trial Balance</span>
+      <span class="nm" data-zh="科目余额表" data-en="Trial Balance"></span>
     </div>
 
     <div class="conn">
-      <span class="lbl">Structure <b class="num">&#9313;</b><span class="sub">Group entity / ownership structure</span></span>
+      <span class="lbl"><span data-zh="集团架构" data-en="Structure"></span> <b class="num">&#9313;</b><span class="sub" data-zh="集团各子公司股权架构" data-en="Group entity / ownership structure"></span></span>
     </div>
 
     <div class="node">
       <span class="badge out">A</span>
-      <span class="nm">PRC Entity-level FS (Before Adjustment)</span>
+      <span class="nm" data-zh="PRC 单体报表（调整前）" data-en="PRC Entity-level FS (Before Adjustment)"></span>
     </div>
 
     <div class="conn">
-      <span class="lbl">Adjustment Layer<span class="sub">Reclassification</span></span>
+      <span class="lbl"><span data-zh="调整层" data-en="Adjustment Layer"></span><span class="sub" data-zh="重分类" data-en="Reclassification"></span></span>
     </div>
 
     <!-- B node with parallel side-output to PRC consolidated -->
     <div class="brow">
       <div class="node">
         <span class="badge out">B</span>
-        <span class="nm">PRC Entity-level FS (After Adjustment)</span>
+        <span class="nm" data-zh="PRC 单体报表（调整后）" data-en="PRC Entity-level FS (After Adjustment)"></span>
       </div>
       <div class="side">
         <div class="harrow"></div>
         <div class="node dashed">
-          <span class="nm">PRC Consolidated FS</span>
+          <span class="nm" data-zh="PRC 合并报表" data-en="PRC Consolidated FS"></span>
         </div>
       </div>
     </div>
 
     <div class="conn">
-      <span class="lbl">Adjustments
-        <span class="chip">GAAP Adj.<b class="num">&#9314;</b></span>
-        <span class="chip">Other Adj.<b class="num">&#9315;</b></span>
+      <span class="lbl"><span data-zh="调整" data-en="Adjustments"></span>
+        <span class="chip"><span data-zh="准则调整" data-en="GAAP Adj."></span><b class="num">&#9314;</b></span>
+        <span class="chip"><span data-zh="其它调整" data-en="Other Adj."></span><b class="num">&#9315;</b></span>
       </span>
     </div>
 
     <div class="node">
       <span class="badge out">C</span>
-      <span class="nm">US Entity-level FS (After Adjustment)</span>
+      <span class="nm" data-zh="US 单体报表（调整后）" data-en="US Entity-level FS (After Adjustment)"></span>
     </div>
 
     <div class="conn">
-      <span class="lbl">Elimination
-        <span class="chip">LT Investment<b class="num">&#9316;</b></span>
-        <span class="chip">Intercompany<b class="num">&#9317;</b></span>
+      <span class="lbl"><span data-zh="合并抵消" data-en="Elimination"></span>
+        <span class="chip"><span data-zh="长投" data-en="LT Investment"></span><b class="num">&#9316;</b></span>
+        <span class="chip"><span data-zh="往来" data-en="Intercompany"></span><b class="num">&#9317;</b></span>
       </span>
     </div>
 
     <div class="node strong">
       <span class="badge out">D</span>
-      <span class="nm">US Consolidated FS (BS, PL)</span>
+      <span class="nm" data-zh="US 合并报表（BS、PL）" data-en="US Consolidated FS (BS, PL)"></span>
     </div>
 
    </div>
   </div>
 
   <!-- FOOTNOTE ANALYSIS -->
-  <div class="eyebrow">II. Footnote Analysis Categories</div>
+  <div class="eyebrow" data-zh="二、附注分析分类" data-en="II. Footnote Analysis Categories"></div>
   <div class="grid">
 
     <!-- Category 1 -->
     <div class="card">
       <div class="card-head">
-        <div class="k">Category 1</div>
-        <h3>Can be produced directly from GL + all adjustments</h3>
+        <div class="k" data-zh="类别 1" data-en="Category 1"></div>
+        <h3 data-zh="基于序时账和所有调整「可以直接出」的附注分析" data-en="Can be produced directly from GL + all adjustments"></h3>
       </div>
       <table>
-        <thead><tr><th>Abbr.</th><th>Full Name</th></tr></thead>
+        <thead><tr><th data-zh="缩写" data-en="Abbr."></th><th data-zh="全称" data-en="Full Name"></th></tr></thead>
         <tbody>
-          <tr><td class="abbr">Cash</td><td class="full">Cash and Cash Equivalents</td></tr>
-          <tr><td class="abbr">AR</td><td class="full">Accounts Receivable</td></tr>
-          <tr><td class="abbr">OR</td><td class="full">Other Receivables</td></tr>
-          <tr><td class="abbr">IA</td><td class="full">Intangible Assets</td></tr>
-          <tr><td class="abbr">PPE</td><td class="full">Property, Plant and Equipment</td></tr>
-          <tr><td class="abbr">OP</td><td class="full">Other Payables</td></tr>
-          <tr><td class="abbr">Salary</td><td class="full">Salary / Payroll Payable</td></tr>
-          <tr><td class="abbr">Taxes Payable</td><td class="full">Taxes Payable</td></tr>
-          <tr><td class="abbr">CL</td><td class="full">Current Liabilities</td></tr>
-          <tr><td class="abbr">AP</td><td class="full">Accounts Payable</td></tr>
-          <tr><td class="abbr">Revenue</td><td class="full">Revenue</td></tr>
-          <tr><td class="abbr">SBC</td><td class="full">Share-Based Compensation</td></tr>
-          <tr><td class="abbr">cost</td><td class="full">Cost (of Revenue / Sales)</td></tr>
-          <tr><td class="abbr">S&amp;M</td><td class="full">Sales &amp; Marketing Expenses</td></tr>
-          <tr><td class="abbr">G&amp;A</td><td class="full">General &amp; Administrative Expenses</td></tr>
-          <tr><td class="abbr">R&amp;D</td><td class="full">Research &amp; Development Expenses</td></tr>
+          <tr><td class="abbr">Cash</td><td class="full" data-zh="现金及现金等价物" data-en="Cash and Cash Equivalents"></td></tr>
+          <tr><td class="abbr">AR</td><td class="full" data-zh="应收账款" data-en="Accounts Receivable"></td></tr>
+          <tr><td class="abbr">OR</td><td class="full" data-zh="其他应收款" data-en="Other Receivables"></td></tr>
+          <tr><td class="abbr">IA</td><td class="full" data-zh="无形资产" data-en="Intangible Assets"></td></tr>
+          <tr><td class="abbr">PPE</td><td class="full" data-zh="固定资产" data-en="Property, Plant and Equipment"></td></tr>
+          <tr><td class="abbr">OP</td><td class="full" data-zh="其他应付款" data-en="Other Payables"></td></tr>
+          <tr><td class="abbr">Salary</td><td class="full" data-zh="应付职工薪酬" data-en="Salary / Payroll Payable"></td></tr>
+          <tr><td class="abbr">Taxes Payable</td><td class="full" data-zh="应交税费" data-en="Taxes Payable"></td></tr>
+          <tr><td class="abbr">CL</td><td class="full" data-zh="流动负债" data-en="Current Liabilities"></td></tr>
+          <tr><td class="abbr">AP</td><td class="full" data-zh="应付账款" data-en="Accounts Payable"></td></tr>
+          <tr><td class="abbr">Revenue</td><td class="full" data-zh="营业收入" data-en="Revenue"></td></tr>
+          <tr><td class="abbr">SBC</td><td class="full" data-zh="股份支付" data-en="Share-Based Compensation"></td></tr>
+          <tr><td class="abbr">cost</td><td class="full" data-zh="营业成本" data-en="Cost (of Revenue / Sales)"></td></tr>
+          <tr><td class="abbr">S&amp;M</td><td class="full" data-zh="销售费用" data-en="Sales &amp; Marketing Expenses"></td></tr>
+          <tr><td class="abbr">G&amp;A</td><td class="full" data-zh="管理费用" data-en="General &amp; Administrative Expenses"></td></tr>
+          <tr><td class="abbr">R&amp;D</td><td class="full" data-zh="研发费用" data-en="Research &amp; Development Expenses"></td></tr>
         </tbody>
       </table>
     </div>
@@ -283,19 +277,19 @@
     <!-- Category 2 -->
     <div class="card">
       <div class="card-head">
-        <div class="k">Category 2</div>
-        <h3>Cannot be produced directly from GL + all adjustments</h3>
+        <div class="k" data-zh="类别 2" data-en="Category 2"></div>
+        <h3 data-zh="基于序时账和所有调整「无法直接出」的附注分析" data-en="Cannot be produced directly from GL + all adjustments"></h3>
       </div>
       <table>
-        <thead><tr><th>Abbr.</th><th>Full Name</th></tr></thead>
+        <thead><tr><th data-zh="缩写" data-en="Abbr."></th><th data-zh="全称" data-en="Full Name"></th></tr></thead>
         <tbody>
-          <tr><td class="abbr">ST Investment</td><td class="full">Short-Term Investment</td></tr>
-          <tr><td class="abbr">DTA</td><td class="full">Deferred Tax Assets</td></tr>
-          <tr><td class="abbr">DTL</td><td class="full">Deferred Tax Liabilities</td></tr>
-          <tr><td class="abbr">Lease</td><td class="full">Lease</td></tr>
-          <tr><td class="abbr">Equity movement</td><td class="full">Statement of Changes in Equity</td></tr>
-          <tr><td class="abbr">EPS</td><td class="full">Earnings Per Share</td></tr>
-          <tr><td class="abbr">Taxation</td><td class="full">Taxation / Income Tax</td></tr>
+          <tr><td class="abbr">ST Investment</td><td class="full" data-zh="短期投资" data-en="Short-Term Investment"></td></tr>
+          <tr><td class="abbr">DTA</td><td class="full" data-zh="递延所得税资产" data-en="Deferred Tax Assets"></td></tr>
+          <tr><td class="abbr">DTL</td><td class="full" data-zh="递延所得税负债" data-en="Deferred Tax Liabilities"></td></tr>
+          <tr><td class="abbr">Lease</td><td class="full" data-zh="租赁" data-en="Lease"></td></tr>
+          <tr><td class="abbr">Equity movement</td><td class="full" data-zh="所有者权益变动表" data-en="Statement of Changes in Equity"></td></tr>
+          <tr><td class="abbr">EPS</td><td class="full" data-zh="每股收益" data-en="Earnings Per Share"></td></tr>
+          <tr><td class="abbr">Taxation</td><td class="full" data-zh="所得税（税项）" data-en="Taxation / Income Tax"></td></tr>
         </tbody>
       </table>
     </div>
@@ -303,24 +297,37 @@
     <!-- Category 3 -->
     <div class="card">
       <div class="card-head">
-        <div class="k">Category 3</div>
-        <h3>Can be produced, but with some difficulty</h3>
+        <div class="k" data-zh="类别 3" data-en="Category 3"></div>
+        <h3 data-zh="基于序时账和所有调整「可以出但有些难度」的表" data-en="Can be produced, but with some difficulty"></h3>
       </div>
       <table>
-        <thead><tr><th>Abbr.</th><th>Full Name</th></tr></thead>
+        <thead><tr><th data-zh="缩写" data-en="Abbr."></th><th data-zh="全称" data-en="Full Name"></th></tr></thead>
         <tbody>
-          <tr><td class="abbr">CF</td><td class="full">Cash Flow Statement</td></tr>
-          <tr><td class="abbr">VIE</td><td class="full">Variable Interest Entity</td></tr>
-          <tr><td class="abbr">Consolidation Schedule</td><td class="full">Consolidation Schedule</td></tr>
-          <tr><td class="abbr">Segment PL &amp; BS</td><td class="full">Segment P&amp;L and Balance Sheet</td></tr>
+          <tr><td class="abbr">CF</td><td class="full" data-zh="现金流量表" data-en="Cash Flow Statement"></td></tr>
+          <tr><td class="abbr">VIE</td><td class="full" data-zh="可变利益实体" data-en="Variable Interest Entity"></td></tr>
+          <tr><td class="abbr">Consolidation Schedule</td><td class="full" data-zh="合并明细表（抵消底稿）" data-en="Consolidation Schedule"></td></tr>
+          <tr><td class="abbr">Segment PL &amp; BS</td><td class="full" data-zh="分部利润表和资产负债表" data-en="Segment P&amp;L and Balance Sheet"></td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="note">Note: BS = Balance Sheet; PL = Profit &amp; Loss Statement. OR / OP read as Other Receivables / Other Payables per statement context.</div>
+    <div class="note" data-zh="注：BS = 资产负债表；PL = 利润表。OR / OP 按报表语境取「其他应收款 / 其他应付款」。" data-en="Note: BS = Balance Sheet; PL = Profit &amp; Loss Statement. OR / OP read as Other Receivables / Other Payables per statement context."></div>
   </div>
 
-  <footer>Compiled from handwritten notes</footer>
+  <footer data-zh="整理自手写笔记 &middot; 中英文一键切换" data-en="Compiled from handwritten notes &middot; One-click EN / CN toggle"></footer>
 </div>
+
+<script>
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-'+lang+']').forEach(function(el){
+      var v = el.getAttribute('data-'+lang);
+      if(v !== null) el.innerHTML = v;
+    });
+    document.getElementById('btn-zh').classList.toggle('active', lang==='zh');
+    document.getElementById('btn-en').classList.toggle('active', lang==='en');
+  }
+  setLang('zh');
+</script>
 </body>
 </html>
