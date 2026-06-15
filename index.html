@@ -6,14 +6,8 @@
 <title data-zh="财务报表生成流程与附注分析" data-en="Financial Reporting Process &amp; Note Analysis">财务报表生成流程与附注分析</title>
 <style>
   :root{
-    --bg:#faf7f0;
-    --paper:#ffffff;
-    --ink:#1f2a37;
-    --ink-soft:#5b6573;
-    --line:#e3ddd0;
-    --navy:#1d3557;
-    --accent:#9c5221;
-    --gold:#b8893a;
+    --bg:#faf7f0; --paper:#ffffff; --ink:#1f2a37; --ink-soft:#5b6573;
+    --line:#e3ddd0; --navy:#1d3557; --accent:#9c5221; --gold:#b8893a;
     --table-head:#f1ece1;
     --shadow:0 1px 2px rgba(31,42,55,.06),0 8px 24px rgba(31,42,55,.06);
   }
@@ -21,135 +15,103 @@
   html,body{margin:0;padding:0;}
   body{
     font-family:"Microsoft YaHei","微软雅黑",Arial,sans-serif;
-    background:
-      radial-gradient(900px 500px at 85% -10%, #fff 0%, rgba(255,255,255,0) 60%),
-      var(--bg);
-    color:var(--ink);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
+    background:radial-gradient(900px 500px at 85% -10%, #fff 0%, rgba(255,255,255,0) 60%),var(--bg);
+    color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:1080px;margin:0 auto;padding:48px 28px 80px;}
+  .wrap{max-width:none;width:100%;margin:0 auto;padding:44px clamp(20px,3.5vw,72px) 72px;}
 
   /* Header */
-  header{
-    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
-    border-bottom:2px solid var(--navy);padding-bottom:18px;margin-bottom:8px;
-  }
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+    border-bottom:2px solid var(--navy);padding-bottom:18px;margin-bottom:8px;}
   .titles h1{font-size:30px;font-weight:700;letter-spacing:.4px;margin:0;color:var(--navy);}
   .titles .sub{margin-top:6px;color:var(--ink-soft);font-size:13.5px;letter-spacing:.3px;}
-  .toggle{
-    flex-shrink:0;display:inline-flex;border:1.5px solid var(--navy);border-radius:999px;
-    overflow:hidden;background:var(--paper);box-shadow:var(--shadow);user-select:none;
-  }
-  .toggle button{
-    border:0;background:transparent;padding:8px 16px;cursor:pointer;color:var(--navy);
-    font-family:inherit;font-weight:700;font-size:13px;transition:.2s;
-  }
+  .toggle{flex-shrink:0;display:inline-flex;border:1.5px solid var(--navy);border-radius:999px;
+    overflow:hidden;background:var(--paper);box-shadow:var(--shadow);user-select:none;}
+  .toggle button{border:0;background:transparent;padding:8px 16px;cursor:pointer;color:var(--navy);
+    font-family:inherit;font-weight:700;font-size:13px;transition:.2s;}
   .toggle button.active{background:var(--navy);color:#fff;}
 
-  .eyebrow{
-    margin:46px 0 14px;font-size:12px;font-weight:700;letter-spacing:2px;
-    text-transform:uppercase;color:var(--accent);
-    display:flex;align-items:center;gap:12px;
-  }
+  .eyebrow{margin:46px 0 14px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent);display:flex;align-items:center;gap:12px;}
   .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
 
-  /* ===== Flow (clean continuous spine) ===== */
-  .flow{
-    background:var(--paper);border:1px solid var(--line);border-radius:16px;
-    padding:24px 28px 40px;box-shadow:var(--shadow);
-  }
-  .flow-key{
-    display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;
-    margin-bottom:26px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
-  }
+  /* ===== Flow (horizontal) ===== */
+  .flow{background:var(--paper);border:1px solid var(--line);border-radius:16px;
+    padding:22px 24px 28px;box-shadow:var(--shadow);overflow-x:auto;}
+  .flow-key{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:18px;font-size:12.5px;font-weight:600;color:var(--ink-soft);}
   .flow-key .k-in{color:var(--navy);font-weight:800;letter-spacing:.5px;}
   .flow-key .k-out{color:var(--accent);font-weight:800;letter-spacing:.5px;}
   .flow-key .sep{color:var(--line);margin:0 4px;}
 
-  .spine{display:flex;flex-direction:column;align-items:center;}
+  /* horizontal track */
+  .spine{display:flex;align-items:stretch;width:max-content;margin-inline:auto;padding-bottom:118px;}
 
-  .node{
-    position:relative;width:100%;max-width:430px;
-    background:#fff;border:1.6px solid var(--navy);border-radius:12px;
-    padding:16px 22px;text-align:center;
-  }
-  .node .nm{display:block;font-weight:700;font-size:15px;color:var(--navy);line-height:1.4;}
+  .node{position:relative;flex:none;width:150px;
+    background:#fff;border:1.6px solid var(--navy);border-radius:12px;padding:14px 12px;
+    display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .node .nm{display:block;font-weight:700;font-size:13.5px;color:var(--navy);line-height:1.4;}
   .node.dashed{border-style:dashed;}
   .node.strong{border-width:2.5px;background:#fbf7ef;}
 
-  .badge{
-    position:absolute;top:-14px;width:28px;height:28px;border-radius:50%;
-    display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff;
-    border:2.5px solid #fff;box-shadow:var(--shadow);
-  }
-  .badge.out{right:-14px;background:var(--accent);}
+  .badge{position:absolute;top:-13px;width:26px;height:26px;border-radius:50%;
+    display:grid;place-items:center;font-size:12.5px;font-weight:700;color:#fff;
+    border:2.5px solid #fff;box-shadow:var(--shadow);}
+  .badge.out{right:-13px;background:var(--accent);}
 
-  /* input numbers ①–⑥ : plain circled glyphs in navy (match the Inputs key) */
+  /* input numbers ①–⑥ : navy circled glyphs */
   .num{color:var(--navy);font-weight:800;font-style:normal;}
-  .node .nm .num{margin-right:6px;}
-  .conn .lbl .num{margin-left:5px;}
+  .node .nm .num{margin-right:5px;}
 
-  /* vertical connector + arrowhead; label rides on a solid pill so the line never shows through */
-  .conn{position:relative;width:2px;background:var(--navy);height:78px;flex:none;}
-  .conn::after{
-    content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
-    border-left:6px solid transparent;border-right:6px solid transparent;
-    border-top:10px solid var(--navy);
-  }
-  .conn .lbl{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:max-content;max-width:min(440px,86vw);
-    background:var(--paper);border:1px solid var(--line);border-radius:999px;
-    padding:6px 14px;box-shadow:var(--shadow);
-    display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:8px;
-    white-space:nowrap;font-size:12.5px;font-weight:700;color:var(--accent);
-  }
-  .conn .lbl .sub{color:var(--ink-soft);font-weight:600;}
-  .conn .lbl .chip{color:var(--ink);font-weight:600;font-size:12.5px;white-space:nowrap;}
+  /* horizontal connector + arrowhead; label pill rides on the line */
+  .connh{position:relative;flex:none;display:flex;align-items:center;}
+  .connh.w-sm{width:60px;}
+  .connh.w-md{width:138px;}
+  .connh.w-lg{width:156px;}
+  .connh .line{width:100%;height:2px;background:var(--navy);position:relative;}
+  .connh .line::after{content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);
+    border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid var(--navy);}
+  .connh .lbl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    max-width:150px;background:var(--paper);border:1px solid var(--line);border-radius:14px;
+    padding:7px 11px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;}
+  .connh .lbl .hd{color:var(--accent);font-weight:700;font-size:12px;white-space:nowrap;}
+  .connh .lbl .sub{color:var(--ink-soft);font-weight:600;font-size:10.5px;line-height:1.3;}
+  .connh .lbl .chip{color:var(--ink);font-weight:600;font-size:11.5px;white-space:nowrap;}
+  .connh .lbl .chip .num{margin-left:4px;}
 
-  /* B row with parallel side-output (PRC consolidated) */
-  .brow{position:relative;width:100%;display:flex;justify-content:center;}
-  .side{position:absolute;left:50%;top:50%;transform:translateY(-50%);margin-left:238px;display:flex;align-items:center;}
-  .harrow{width:40px;height:2px;background:var(--navy);position:relative;flex:none;}
-  .harrow::after{
-    content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);
-    border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid var(--navy);
-  }
-  .side .node{width:auto;max-width:190px;}
+  /* B node's downward side-output to PRC consolidated */
+  .side-down{position:absolute;top:100%;left:50%;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;padding-top:8px;}
+  .vline{width:2px;height:30px;background:var(--navy);position:relative;}
+  .vline::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+    border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid var(--navy);}
+  .side-down .node{width:150px;margin-top:0;}
 
-  /* Tables */
-  .grid{display:grid;gap:26px;}
+  /* Tables — three columns side by side */
+  .cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
   .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
-  .card-head{padding:16px 22px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbf8f1);}
-  .card-head .k{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--accent);}
-  .card-head h3{margin:4px 0 0;font-size:16.5px;color:var(--navy);font-weight:700;}
-  table{width:100%;border-collapse:collapse;font-size:14px;}
-  th,td{padding:10px 22px;text-align:left;border-bottom:1px solid var(--line);}
-  th{background:var(--table-head);color:var(--navy);font-weight:700;font-size:12.5px;letter-spacing:.5px;}
+  .card-head{padding:15px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbf8f1);}
+  .card-head .k{font-size:11.5px;font-weight:700;letter-spacing:1px;color:var(--accent);}
+  .card-head h3{margin:4px 0 0;font-size:14.5px;color:var(--navy);font-weight:700;line-height:1.4;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:9px 16px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{background:var(--table-head);color:var(--navy);font-weight:700;font-size:11.5px;letter-spacing:.4px;}
   tbody tr:last-child td{border-bottom:0;}
   tbody tr:hover{background:#fcfaf5;}
-  td.abbr{font-family:Arial,sans-serif;font-weight:700;color:var(--accent);white-space:nowrap;width:42%;}
+  td.abbr{font-family:Arial,sans-serif;font-weight:700;color:var(--accent);width:44%;}
   td.full{color:var(--ink);}
 
-  .note{
-    margin-top:14px;font-size:12.5px;color:var(--ink-soft);
-    border-left:3px solid var(--gold);padding:8px 0 8px 12px;background:#fbf7ee;border-radius:0 6px 6px 0;
-  }
-
+  .note{margin-top:14px;font-size:12.5px;color:var(--ink-soft);
+    border-left:3px solid var(--gold);padding:8px 0 8px 12px;background:#fbf7ee;border-radius:0 6px 6px 0;}
   footer{margin-top:54px;text-align:center;font-size:12px;color:var(--ink-soft);}
 
-  @media(max-width:860px){
-    .side{position:static;transform:none;margin-left:0;margin-top:14px;flex-direction:column;}
-    .brow{flex-direction:column;align-items:center;}
-    .harrow{width:2px;height:26px;}
-    .harrow::after{right:auto;left:50%;top:auto;bottom:0;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid var(--navy);border-bottom:0;}
-    .side .node{max-width:430px;}
+  @media(max-width:900px){
+    .cards-row{grid-template-columns:1fr;}
   }
   @media(max-width:640px){
     .titles h1{font-size:22px;}
     th,td{padding:9px 14px;}
-    .conn{height:92px;}
   }
 </style>
 </head>
@@ -167,7 +129,7 @@
     </div>
   </header>
 
-  <!-- FLOW -->
+  <!-- FLOW (horizontal) -->
   <div class="eyebrow" data-zh="一、报表生成流程" data-en="I. Reporting Process Flow"></div>
   <div class="flow">
    <div class="flow-key">
@@ -175,20 +137,25 @@
      <span class="sep">|</span>
      <span><b class="k-out">A &ndash; D</b> <span data-zh="输出" data-en="Outputs"></span></span>
    </div>
+
    <div class="spine">
 
     <div class="node dashed">
-      <span class="nm"><b class="num">&#9312;</b> <span data-zh="序时账" data-en="General Ledger / Journal"></span></span>
+      <span class="nm"><b class="num">&#9312;</b><span data-zh="序时账" data-en="General Ledger / Journal"></span></span>
     </div>
 
-    <div class="conn"></div>
+    <div class="connh w-sm"><div class="line"></div></div>
 
     <div class="node">
       <span class="nm" data-zh="科目余额表" data-en="Trial Balance"></span>
     </div>
 
-    <div class="conn">
-      <span class="lbl"><span data-zh="集团架构" data-en="Structure"></span> <b class="num">&#9313;</b><span class="sub" data-zh="集团各子公司股权架构" data-en="Group entity / ownership structure"></span></span>
+    <div class="connh w-lg">
+      <div class="line"></div>
+      <span class="lbl">
+        <span class="hd"><span data-zh="集团架构" data-en="Structure"></span> <b class="num">&#9313;</b></span>
+        <span class="sub" data-zh="集团各子公司股权架构" data-en="Group ownership structure"></span>
+      </span>
     </div>
 
     <div class="node">
@@ -196,26 +163,30 @@
       <span class="nm" data-zh="PRC 单体报表（调整前）" data-en="PRC Entity-level FS (Before Adjustment)"></span>
     </div>
 
-    <div class="conn">
-      <span class="lbl"><span data-zh="调整层" data-en="Adjustment Layer"></span><span class="sub" data-zh="重分类" data-en="Reclassification"></span></span>
+    <div class="connh w-md">
+      <div class="line"></div>
+      <span class="lbl">
+        <span class="hd" data-zh="调整层" data-en="Adjustment Layer"></span>
+        <span class="sub" data-zh="重分类" data-en="Reclassification"></span>
+      </span>
     </div>
 
-    <!-- B node with parallel side-output to PRC consolidated -->
-    <div class="brow">
-      <div class="node">
-        <span class="badge out">B</span>
-        <span class="nm" data-zh="PRC 单体报表（调整后）" data-en="PRC Entity-level FS (After Adjustment)"></span>
-      </div>
-      <div class="side">
-        <div class="harrow"></div>
+    <!-- B node + downward side-output to PRC consolidated -->
+    <div class="node">
+      <span class="badge out">B</span>
+      <span class="nm" data-zh="PRC 单体报表（调整后）" data-en="PRC Entity-level FS (After Adjustment)"></span>
+      <div class="side-down">
+        <div class="vline"></div>
         <div class="node dashed">
           <span class="nm" data-zh="PRC 合并报表" data-en="PRC Consolidated FS"></span>
         </div>
       </div>
     </div>
 
-    <div class="conn">
-      <span class="lbl"><span data-zh="调整" data-en="Adjustments"></span>
+    <div class="connh w-md">
+      <div class="line"></div>
+      <span class="lbl">
+        <span class="hd" data-zh="调整" data-en="Adjustments"></span>
         <span class="chip"><span data-zh="准则调整" data-en="GAAP Adj."></span><b class="num">&#9314;</b></span>
         <span class="chip"><span data-zh="其它调整" data-en="Other Adj."></span><b class="num">&#9315;</b></span>
       </span>
@@ -226,8 +197,10 @@
       <span class="nm" data-zh="US 单体报表（调整后）" data-en="US Entity-level FS (After Adjustment)"></span>
     </div>
 
-    <div class="conn">
-      <span class="lbl"><span data-zh="合并抵消" data-en="Elimination"></span>
+    <div class="connh w-lg">
+      <div class="line"></div>
+      <span class="lbl">
+        <span class="hd" data-zh="合并抵消" data-en="Elimination"></span>
         <span class="chip"><span data-zh="长投" data-en="LT Investment"></span><b class="num">&#9316;</b></span>
         <span class="chip"><span data-zh="往来" data-en="Intercompany"></span><b class="num">&#9317;</b></span>
       </span>
@@ -243,9 +216,8 @@
 
   <!-- FOOTNOTE ANALYSIS -->
   <div class="eyebrow" data-zh="二、附注分析分类" data-en="II. Footnote Analysis Categories"></div>
-  <div class="grid">
+  <div class="cards-row">
 
-    <!-- Category 1 -->
     <div class="card">
       <div class="card-head">
         <div class="k" data-zh="类别 1" data-en="Category 1"></div>
@@ -274,7 +246,6 @@
       </table>
     </div>
 
-    <!-- Category 2 -->
     <div class="card">
       <div class="card-head">
         <div class="k" data-zh="类别 2" data-en="Category 2"></div>
@@ -294,7 +265,6 @@
       </table>
     </div>
 
-    <!-- Category 3 -->
     <div class="card">
       <div class="card-head">
         <div class="k" data-zh="类别 3" data-en="Category 3"></div>
@@ -311,8 +281,9 @@
       </table>
     </div>
 
+    </div>
+
     <div class="note" data-zh="注：BS = 资产负债表；PL = 利润表。OR / OP 按报表语境取「其他应收款 / 其他应付款」。" data-en="Note: BS = Balance Sheet; PL = Profit &amp; Loss Statement. OR / OP read as Other Receivables / Other Payables per statement context."></div>
-  </div>
 
   <footer data-zh="整理自手写笔记 &middot; 中英文一键切换" data-en="Compiled from handwritten notes &middot; One-click EN / CN toggle"></footer>
 </div>
